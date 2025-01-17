@@ -7,8 +7,10 @@ import androidx.room.PrimaryKey;
 public class Vacation {
     @PrimaryKey(autoGenerate = true)
     private int vacationID;
-    private String vacationName;
+    private String vacationTitle;
     private double vacationPrice;
+    private String startDate;
+    private String endDate;
 
     public int getVacationID() {
         return vacationID;
@@ -18,12 +20,12 @@ public class Vacation {
         this.vacationID = vacationID;
     }
 
-    public String getVacationName() {
-        return vacationName;
+    public String getVacationTitle() {
+        return vacationTitle;
     }
 
-    public void setVacationName(String vacationName) {
-        this.vacationName = vacationName;
+    public void setVacationTitle(String vacationTitle) {
+        this.vacationTitle = vacationTitle;
     }
 
     public double getVacationPrice() {
@@ -34,9 +36,29 @@ public class Vacation {
         this.vacationPrice = vacationPrice;
     }
 
-    public Vacation(int vacationID, String vacationName, double vacationPrice) {
-        this.vacationID = vacationID;
-        this.vacationName = vacationName;
-        this.vacationPrice = vacationPrice;
+    public String getStartDate() {
+        return startDate;
     }
+
+    public void setStartDate(String startDate) {
+        this.startDate = startDate;
+    }
+
+    public String getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(String endDate) {
+        this.endDate = endDate;
+    }
+
+    public Vacation(int vacationID, String vacationTitle, double vacationPrice, String startDate, String endDate) {
+        this.vacationID = vacationID;
+        this.vacationTitle = vacationTitle;
+        this.vacationPrice = vacationPrice;
+        this.startDate = startDate;
+        this.endDate = endDate;
+    }
+
+
 }

@@ -11,7 +11,8 @@ import com.thins15.d308vacationplanner.dao.VacationDAO;
 import com.thins15.d308vacationplanner.entities.Vacation;
 import com.thins15.d308vacationplanner.entities.Excursion;
 
-@Database(entities = {Excursion.class, Vacation.class}, version = 1)
+//Increment version number to empty db for now
+@Database(entities = {Excursion.class, Vacation.class}, version = 1, exportSchema = false)
 public abstract class VacationDatabaseBuilder extends RoomDatabase {
     public abstract VacationDAO vacationDAO();
     public abstract ExcursionDAO excursionDAO();
@@ -21,8 +22,7 @@ public abstract class VacationDatabaseBuilder extends RoomDatabase {
         if(INSTANCE==null){
             synchronized (VacationDatabaseBuilder.class){
                 if(INSTANCE==null) {
-                    INSTANCE = Room.databaseBuilder(context.getApplicationContext(), VacationDatabaseBuilder.class,
-                                    "MyVacationDatabase.db")
+                    INSTANCE = Room.databaseBuilder(context.getApplicationContext(), VacationDatabaseBuilder.class, "MyVacationDatabase.db")
                             .fallbackToDestructiveMigration()
                             .build();
                 }

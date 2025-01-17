@@ -15,8 +15,12 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.thins15.d308vacationplanner.R;
+import com.thins15.d308vacationplanner.database.Repository;
+import com.thins15.d308vacationplanner.entities.Excursion;
+import com.thins15.d308vacationplanner.entities.Vacation;
 
 public class VacationList extends AppCompatActivity {
+    private Repository repository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +56,16 @@ public class VacationList extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
         if(item.getItemId()==R.id.sample){
-            Toast.makeText(VacationList.this, "Enter sample data", Toast.LENGTH_LONG).show();
+            repository = new Repository(getApplication());
+            // FIX ME: populate with desired data. Currently based on example data from webseries
+            Vacation vacation = new Vacation (0,"Florence Spring Break", 550, "4/5/2025", "4/15/2025");
+            repository.insert(vacation);
+
+            vacation = new Vacation (0,"Italian Honeymoon", 600, "4/5/2025", "4/15/2025");
+            Excursion excursion = new Excursion(0,"Hot Air Balloon Ride", 80, 1);
+            repository.insert(excursion);
+
+
             return true;
         }
         if(item.getItemId() == android.R.id.home){
