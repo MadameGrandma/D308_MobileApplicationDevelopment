@@ -3,13 +3,13 @@ package com.thins15.d308vacationplanner.entities;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-
+// Excursions should include title and date
 @Entity(tableName = "excursions")
 public class Excursion {
     @PrimaryKey(autoGenerate = true)
     private int excursionID;
-    private String excursionName;
-    private double excursionPrice;
+    private String excursionTitle;
+    private String excursionDate;
     private int vacationID;
 
     public int getExcursionID() {
@@ -20,20 +20,20 @@ public class Excursion {
         this.excursionID = excursionID;
     }
 
-    public String getExcursionName() {
-        return excursionName;
+    public String getExcursionTitle() {
+        return excursionTitle;
     }
 
-    public void setExcursionName(String excursionName) {
-        this.excursionName = excursionName;
+    public void setExcursionTitle(String excursionTitle) {
+        this.excursionTitle = excursionTitle;
     }
 
-    public double getExcursionPrice() {
-        return excursionPrice;
+    public String getExcursionDate() {
+        return excursionDate;
     }
 
-    public void setExcursionPrice(double excursionPrice) {
-        this.excursionPrice = excursionPrice;
+    public void setExcursionDate(String excursionDate) {
+        this.excursionDate = excursionDate;
     }
 
     public int getVacationID() {
@@ -44,10 +44,10 @@ public class Excursion {
         this.vacationID = vacationID;
     }
 
-    public Excursion(int excursionID, String excursionName, double excursionPrice, int vacationID) {
+    public Excursion(int excursionID, String excursionTitle, String excursionDate, int vacationID) {
         this.excursionID = excursionID;
-        this.excursionName = excursionName;
-        this.excursionPrice = excursionPrice;
+        this.excursionTitle = excursionTitle;
+        this.excursionDate = excursionDate;
         this.vacationID = vacationID;
     }
 }

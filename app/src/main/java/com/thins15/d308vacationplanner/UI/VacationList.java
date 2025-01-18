@@ -73,7 +73,7 @@ public class VacationList extends AppCompatActivity {
             repository.insert(vacation);
 
             Vacation vacation2 = new Vacation (0,"Italian Honeymoon", 600, "4/5/2025", "4/15/2025");
-            Excursion excursion = new Excursion(0,"Hot Air Balloon Ride", 80, 1);
+            Excursion excursion = new Excursion(0,"Hot Air Balloon Ride", "5/12/2025", 1);
             repository.insert(vacation2);
             repository.insert(excursion);
 
