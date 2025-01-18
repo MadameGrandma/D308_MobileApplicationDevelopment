@@ -31,7 +31,7 @@ public class Repository {
     // Executors
     // Threaded for async
     // Vacations
-    public List<Vacation>getmAllVacations(){
+    public List<Vacation> getAllVacations(){
         databaseExecutor.execute(()->{
             mAllVacations = mVacationDAO.getAllVacations();
         });

@@ -12,12 +12,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.thins15.d308vacationplanner.R;
 import com.thins15.d308vacationplanner.database.Repository;
 import com.thins15.d308vacationplanner.entities.Excursion;
 import com.thins15.d308vacationplanner.entities.Vacation;
+
+import java.util.List;
 
 public class VacationList extends AppCompatActivity {
     private Repository repository;
@@ -37,7 +41,14 @@ public class VacationList extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        System.out.println(getIntent().getStringExtra("test"));
+
+        RecyclerView recyclerView = findViewById(R.id.recyclerView);
+        repository = new Repository(getApplication());
+        List<Vacation> allVacations = repository.getAllVacations();
+        final VacationAdapter vacationAdapter = new VacationAdapter(this);
+        recyclerView.setAdapter(vacationAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        vacationAdapter.setVacations(allVacations);
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -61,9 +72,11 @@ public class VacationList extends AppCompatActivity {
             Vacation vacation = new Vacation (0,"Florence Spring Break", 550, "4/5/2025", "4/15/2025");
             repository.insert(vacation);
 
-            vacation = new Vacation (0,"Italian Honeymoon", 600, "4/5/2025", "4/15/2025");
+            Vacation vacation2 = new Vacation (0,"Italian Honeymoon", 600, "4/5/2025", "4/15/2025");
             Excursion excursion = new Excursion(0,"Hot Air Balloon Ride", 80, 1);
+            repository.insert(vacation2);
             repository.insert(excursion);
+
 
 
             return true;
