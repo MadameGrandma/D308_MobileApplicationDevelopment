@@ -68,11 +68,12 @@ public class VacationList extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item){
         if(item.getItemId()==R.id.sample){
             repository = new Repository(getApplication());
-            // FIX ME: populate with desired data. Currently based on example data from webseries
-            Vacation vacation = new Vacation (0,"Florence Spring Break", 550, "4/5/2025", "4/15/2025");
+            // FIX ME: it appears that db entries are breaking the program. Error is "Attempt to invoke
+            // virtual method 'void android.widget.TextView.setText(java.lang.CharSequence)' on a null object reference"
+            Vacation vacation = new Vacation (0,"Florence Spring Break", "Hilton", "4/5/2025", "4/15/2025");
             repository.insert(vacation);
 
-            Vacation vacation2 = new Vacation (0,"Italian Honeymoon", 600, "4/5/2025", "4/15/2025");
+            Vacation vacation2 = new Vacation (0,"Italian Honeymoon", "Best Western", "4/5/2025", "4/15/2025");
             Excursion excursion = new Excursion(0,"Hot Air Balloon Ride", "5/12/2025", 1);
             repository.insert(vacation2);
             repository.insert(excursion);
@@ -86,5 +87,18 @@ public class VacationList extends AppCompatActivity {
             return true;
         }
         return true;
+    }
+
+    @Override
+    protected void onResume() {
+
+        super.onResume();
+        List<Vacation> allVacations = repository.getAllVacations();
+        RecyclerView recyclerView = findViewById(R.id.recyclerView);
+        final VacationAdapter vacationAdapter = new VacationAdapter(this);
+        recyclerView.setAdapter(vacationAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        vacationAdapter.setVacations(allVacations);
+
     }
 }

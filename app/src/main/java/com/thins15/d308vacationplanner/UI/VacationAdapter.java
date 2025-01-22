@@ -31,7 +31,7 @@ public class VacationAdapter extends RecyclerView.Adapter<VacationAdapter.Vacati
         private final TextView vacationItemView;
         public VacationViewHolder(@NonNull View itemView) {
             super(itemView);
-            vacationItemView = itemView.findViewById(R.id.textView2);
+            vacationItemView = itemView.findViewById(R.id.vacayTitle);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view){
@@ -41,6 +41,7 @@ public class VacationAdapter extends RecyclerView.Adapter<VacationAdapter.Vacati
                     // FIX ME: id may need to be removed. Add "Accommodations" to this AND Vacation entity
                     intent.putExtra("id", current.getVacationID());
                     intent.putExtra("title", current.getVacationTitle());
+                    intent.putExtra("accommodations",current.getVacationAccomod());
                     intent.putExtra("startDate", current.getStartDate());
                     intent.putExtra("endDate", current.getEndDate());
                     context.startActivity(intent);
@@ -53,16 +54,16 @@ public class VacationAdapter extends RecyclerView.Adapter<VacationAdapter.Vacati
 
     @NonNull
     @Override
-    public VacationAdapter.VacationViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public VacationViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView=mInflater.inflate(R.layout.vacation_list_item,parent,false);
         return new VacationViewHolder(itemView);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull VacationAdapter.VacationViewHolder holder, int position) {
-        if(mVacations!=null){
+    public void onBindViewHolder(@NonNull VacationViewHolder holder, int position) {
+        if(mVacations != null){
             Vacation current = mVacations.get(position);
-            String name= current.getVacationTitle();
+            String name = current.getVacationTitle();
             holder.vacationItemView.setText(name);
         } else{
             holder.vacationItemView.setText("No vacation title");
