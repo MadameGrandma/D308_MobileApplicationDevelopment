@@ -23,6 +23,12 @@ public class ExcursionAdapter extends RecyclerView.Adapter<ExcursionAdapter.Excu
     private List<Excursion> mExcursions;
     private final Context context;
     private final LayoutInflater mInflater;
+
+    public ExcursionAdapter(Context context){
+        mInflater = LayoutInflater.from(context);
+        this.context = context;
+    }
+
     class ExcursionViewHolder extends RecyclerView.ViewHolder {
         private final TextView excursionItemView;
         private final TextView excursionItemView2;
@@ -30,9 +36,9 @@ public class ExcursionAdapter extends RecyclerView.Adapter<ExcursionAdapter.Excu
 
         private ExcursionViewHolder(@NonNull View itemView) {
             super(itemView);
-            excursionItemView = itemView.findViewById(R.id.textView3);
-            excursionItemView2 = itemView.findViewById(R.id.textView4);
-            excursionItemView3 = itemView.findViewById(R.id.textView5);
+            excursionItemView = itemView.findViewById(R.id.excurTitle1);
+            excursionItemView2 = itemView.findViewById(R.id.excurVacay);
+            excursionItemView3 = itemView.findViewById(R.id.excurDate2);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -48,16 +54,12 @@ public class ExcursionAdapter extends RecyclerView.Adapter<ExcursionAdapter.Excu
         }
     }
 
-        public ExcursionAdapter(Context context){
-            mInflater = LayoutInflater.from(context);
-            this.context = context;
-        }
-
-        @Override
-        public ExcursionViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType){
-            View itemView = mInflater.inflate(R.layout.excursion_list_item,parent,false);
-            return new ExcursionViewHolder(itemView);
-        }
+    @NonNull
+    @Override
+    public ExcursionViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType){
+        View itemView = mInflater.inflate(R.layout.excursion_list_item,parent,false);
+        return new ExcursionViewHolder(itemView);
+    }
 
     @Override
     public void onBindViewHolder(@NonNull ExcursionViewHolder holder, int position) {

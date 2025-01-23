@@ -38,7 +38,6 @@ public class VacationAdapter extends RecyclerView.Adapter<VacationAdapter.Vacati
                     int position = getAdapterPosition();
                     final Vacation current =mVacations.get(position);
                     Intent intent = new Intent(context, VacationDetails.class);
-                    // FIX ME: id may need to be removed. Add "Accommodations" to this AND Vacation entity
                     intent.putExtra("id", current.getVacationID());
                     intent.putExtra("title", current.getVacationTitle());
                     intent.putExtra("accommodations",current.getVacationAccomod());

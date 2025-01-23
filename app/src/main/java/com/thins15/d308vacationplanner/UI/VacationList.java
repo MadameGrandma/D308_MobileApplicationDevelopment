@@ -80,6 +80,7 @@ public class VacationList extends AppCompatActivity {
 
             return true;
         }
+        // Enables top left back button
         if(item.getItemId() == android.R.id.home){
             this.finish();
             return true;

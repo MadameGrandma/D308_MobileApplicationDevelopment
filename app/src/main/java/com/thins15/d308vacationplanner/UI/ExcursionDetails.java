@@ -1,5 +1,7 @@
 package com.thins15.d308vacationplanner.UI;
 
+import static androidx.core.app.PendingIntentCompat.getActivity;
+
 import android.app.AlarmManager;
 import android.app.DatePickerDialog;
 import android.app.PendingIntent;
@@ -40,6 +42,7 @@ public class ExcursionDetails extends AppCompatActivity {
     int excursionID;
     int vacationID;
     String excursionTitle;
+    String date;
     //String excursionDate;
 
     EditText editName;
@@ -60,22 +63,24 @@ public class ExcursionDetails extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_excursions_details);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         repository = new Repository(getApplication());
-        excursionTitle = getIntent().getStringExtra("name");
-        excursionID = getIntent().getIntExtra("id", -1);
-
-        // FIX ME: Program not pulling selection from spinner to associate to vacation when entering new Excursions into db
-        vacationID = getIntent().getIntExtra("vacay id", 0);
-        editVacayID = findViewById(R.id.spinner);
-        editVacayID.setOnItemClickListener(editVacayID);
-
-
 
         editName = findViewById(R.id.excursionName);
-        editName.setText(excursionTitle);
-
-        editNote=findViewById(R.id.note);
         editDate = findViewById(R.id.excursionDate);
+        editNote=findViewById(R.id.note);
+        editVacayID=findViewById(R.id.spinner);
+
+        excursionID = getIntent().getIntExtra("id", -1);
+        excursionTitle = getIntent().getStringExtra("title");
+        date = getIntent().getStringExtra("startDate");
+        vacationID = getIntent().getIntExtra("vacayID", -1);
+
+
+        editName.setText(excursionTitle);
+        editDate.setText(date);
+        editVacayID.setId(vacationID);
+
         String myFormat = "MM/dd/yy";
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
 
@@ -190,7 +195,13 @@ public class ExcursionDetails extends AppCompatActivity {
 
             return true;
         }
+        // Enables top left back button
+        if (item.getItemId() == android.R.id.home) {
+            this.finish();
+            return true;
+        }
         return true;
     }
+
 
 }

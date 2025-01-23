@@ -24,6 +24,7 @@ import com.thins15.d308vacationplanner.entities.Vacation;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class VacationDetails extends AppCompatActivity {
     int vacationID;
@@ -49,6 +50,7 @@ public class VacationDetails extends AppCompatActivity {
         // Enables click action on floating action button
         FloatingActionButton fab = findViewById(R.id.floatingActionButton2);
 
+        // Pulls existing item details and shows in activity_vacation_details
         editTitle = findViewById(R.id.vacayTitle2);
         editVacayAccomod = findViewById(R.id.vacayStay);
         editStartDate = findViewById(R.id.vacayStart);
@@ -57,10 +59,9 @@ public class VacationDetails extends AppCompatActivity {
         vacationID = getIntent().getIntExtra("id", -1);
         vacationTitle = getIntent().getStringExtra("title");
         vacationAccomod = getIntent().getStringExtra("accommodations");
-        startDate = getIntent().getStringExtra("start");
-        endDate = getIntent().getStringExtra("end");
+        startDate = getIntent().getStringExtra("startDate");
+        endDate = getIntent().getStringExtra("endDate");
 
-        // FIX ME: When reviewing an existing DB item, screen is not populating the startDate or endDate
         editTitle.setText(vacationTitle);
         editVacayAccomod.setText(vacationAccomod);
         editStartDate.setText(startDate);
@@ -87,7 +88,7 @@ public class VacationDetails extends AppCompatActivity {
         recyclerView.setAdapter(excursionAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         List<Excursion> filteredExcursions = new ArrayList<>();
-        for (Excursion e : repository.getAllExcursions()){
+        for (Excursion e : repository.getAllExcursions()) {
             if (e.getVacationID() == vacationID) filteredExcursions.add(e);
         }
         excursionAdapter.setExcursions(filteredExcursions);
@@ -125,17 +126,24 @@ public class VacationDetails extends AppCompatActivity {
                 if (vacay.getVacationID() == vacationID) currentVacay = vacay;
             }
             numExcursions = 0;
-            for(Excursion excursion: repository.getAllExcursions()){
-                if(excursion.getVacationID() == vacationID) ++numExcursions;
+            for (Excursion excursion : repository.getAllExcursions()) {
+                if (excursion.getVacationID() == vacationID) ++numExcursions;
             }
             // Prevent deletion of vacations that have excursions associated with them
-            if(numExcursions==0){
+            if (numExcursions == 0) {
                 repository.delete(currentVacay);
                 Toast.makeText(VacationDetails.this, currentVacay.getVacationTitle() + " was deleted", Toast.LENGTH_LONG).show();
                 this.finish();
             } else {
                 Toast.makeText(VacationDetails.this, "Can't delete a vacation that has excursions", Toast.LENGTH_LONG).show();
             }
+            return true;
+        }
+
+        // Enables top left back button
+        if (item.getItemId() == android.R.id.home) {
+            this.finish();
+            return true;
         }
         return true;
     }
