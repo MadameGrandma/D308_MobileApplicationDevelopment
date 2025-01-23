@@ -68,8 +68,6 @@ public class VacationList extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item){
         if(item.getItemId()==R.id.sample){
             repository = new Repository(getApplication());
-            // FIX ME: it appears that db entries are breaking the program. Error is "Attempt to invoke
-            // virtual method 'void android.widget.TextView.setText(java.lang.CharSequence)' on a null object reference"
             Vacation vacation = new Vacation (0,"Florence Spring Break", "Hilton", "4/5/2025", "4/15/2025");
             repository.insert(vacation);
 

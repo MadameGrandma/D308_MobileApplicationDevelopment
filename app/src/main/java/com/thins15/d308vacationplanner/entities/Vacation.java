@@ -23,6 +23,10 @@ public class Vacation {
         this.endDate = endDate;
     }
 
+    public String toString() {
+        return vacationTitle;
+    }
+
     public int getVacationID() {
         return vacationID;
     }

@@ -6,6 +6,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,8 +22,13 @@ import com.thins15.d308vacationplanner.database.Repository;
 import com.thins15.d308vacationplanner.entities.Excursion;
 import com.thins15.d308vacationplanner.entities.Vacation;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class VacationDetails extends AppCompatActivity {
     int vacationID;
+    int numExcursions;
+    Vacation currentVacay;
     String vacationTitle;
     String vacationAccomod;
     String startDate;
@@ -54,6 +60,7 @@ public class VacationDetails extends AppCompatActivity {
         startDate = getIntent().getStringExtra("start");
         endDate = getIntent().getStringExtra("end");
 
+        // FIX ME: When reviewing an existing DB item, screen is not populating the startDate or endDate
         editTitle.setText(vacationTitle);
         editVacayAccomod.setText(vacationAccomod);
         editStartDate.setText(startDate);
@@ -79,7 +86,11 @@ public class VacationDetails extends AppCompatActivity {
         final ExcursionAdapter excursionAdapter = new ExcursionAdapter(this);
         recyclerView.setAdapter(excursionAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        excursionAdapter.setExcursions(repository.getAllExcursions());
+        List<Excursion> filteredExcursions = new ArrayList<>();
+        for (Excursion e : repository.getAllExcursions()){
+            if (e.getVacationID() == vacationID) filteredExcursions.add(e);
+        }
+        excursionAdapter.setExcursions(filteredExcursions);
 
     }
 
@@ -98,12 +109,32 @@ public class VacationDetails extends AppCompatActivity {
                 vacation = new Vacation(vacationID, editTitle.getText().toString(), editVacayAccomod.getText().toString(),
                         editStartDate.getText().toString(), editEndDate.getText().toString());
                 repository.insert(vacation);
+                Toast.makeText(VacationDetails.this, "Vacation saved", Toast.LENGTH_LONG).show();
                 this.finish();
             } else {
                 vacation = new Vacation(vacationID, editTitle.getText().toString(), editVacayAccomod.getText().toString(),
-                        editStartDate.getText().toString(), editEndDate.getText().toString());
+                        editStartDate.getText().toString(), editEndDate.getEditableText().toString());
                 repository.update(vacation);
+                Toast.makeText(VacationDetails.this, "Vacation updated", Toast.LENGTH_LONG).show();
                 this.finish();
+            }
+        }
+
+        if (item.getItemId() == R.id.vacaydelete) {
+            for (Vacation vacay : repository.getAllVacations()) {
+                if (vacay.getVacationID() == vacationID) currentVacay = vacay;
+            }
+            numExcursions = 0;
+            for(Excursion excursion: repository.getAllExcursions()){
+                if(excursion.getVacationID() == vacationID) ++numExcursions;
+            }
+            // Prevent deletion of vacations that have excursions associated with them
+            if(numExcursions==0){
+                repository.delete(currentVacay);
+                Toast.makeText(VacationDetails.this, currentVacay.getVacationTitle() + " was deleted", Toast.LENGTH_LONG).show();
+                this.finish();
+            } else {
+                Toast.makeText(VacationDetails.this, "Can't delete a vacation that has excursions", Toast.LENGTH_LONG).show();
             }
         }
         return true;

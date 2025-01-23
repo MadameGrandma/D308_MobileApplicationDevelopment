@@ -25,10 +25,14 @@ public class ExcursionAdapter extends RecyclerView.Adapter<ExcursionAdapter.Excu
     private final LayoutInflater mInflater;
     class ExcursionViewHolder extends RecyclerView.ViewHolder {
         private final TextView excursionItemView;
+        private final TextView excursionItemView2;
+        private final TextView excursionItemView3;
 
         private ExcursionViewHolder(@NonNull View itemView) {
             super(itemView);
             excursionItemView = itemView.findViewById(R.id.textView3);
+            excursionItemView2 = itemView.findViewById(R.id.textView4);
+            excursionItemView3 = itemView.findViewById(R.id.textView5);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -63,8 +67,12 @@ public class ExcursionAdapter extends RecyclerView.Adapter<ExcursionAdapter.Excu
             int vacayID = current.getVacationID();
             String date = current.getExcursionDate();
             holder.excursionItemView.setText(title);
+            holder.excursionItemView2.setText(Integer.toString(vacayID));
+            holder.excursionItemView3.setText(date);
         } else {
             holder.excursionItemView.setText("No excursion title");
+            holder.excursionItemView2.setText("No excursion ID");
+            holder.excursionItemView3.setText("No excursion date");
         }
     }
 

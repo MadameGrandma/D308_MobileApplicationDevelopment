@@ -15,6 +15,9 @@ import com.thins15.d308vacationplanner.R;
 
 public class MainActivity extends AppCompatActivity {
 
+    public static int numAlert;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
