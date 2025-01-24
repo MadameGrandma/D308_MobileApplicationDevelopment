@@ -49,6 +49,7 @@ public class ExcursionDetails extends AppCompatActivity {
     EditText editNote;
     TextView editDate;
     Spinner editVacayID;
+    String newID;
 
 
     Repository repository;
@@ -62,24 +63,26 @@ public class ExcursionDetails extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_excursions_details);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         repository = new Repository(getApplication());
 
         editName = findViewById(R.id.excursionName);
         editDate = findViewById(R.id.excursionDate);
         editNote=findViewById(R.id.note);
-        editVacayID=findViewById(R.id.spinner);
+        final Spinner editVacayID=findViewById(R.id.spinner);
 
-        excursionID = getIntent().getIntExtra("id", -1);
+        excursionID = getIntent().getIntExtra("excursionID", -1);
         excursionTitle = getIntent().getStringExtra("title");
         date = getIntent().getStringExtra("startDate");
-        vacationID = getIntent().getIntExtra("vacayID", -1);
+        vacationID = getIntent().getIntExtra("vacationID", -1);
+        //vacationID = Integer.parseInt(getIntent().getStringExtra("vacayID"));
+        //vacationID = getIntent().getStringExtra(("vacayID");
 
 
         editName.setText(excursionTitle);
         editDate.setText(date);
-        editVacayID.setId(vacationID);
+        //editVacayID.setId(vacationID);
 
         String myFormat = "MM/dd/yy";
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
@@ -117,13 +120,17 @@ public class ExcursionDetails extends AppCompatActivity {
             }
         });
 
+
+
         //Spinner stuff
         // Associate excursion with vacation title using spinner
+        // FIX ME: Not working
         Spinner spinner = findViewById(R.id.spinner);
         ArrayList<Vacation> vacationArrayList = new ArrayList<>();
         vacationArrayList.addAll(repository.getAllVacations());
         ArrayAdapter<Vacation> vacationAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, vacationArrayList);
         spinner.setAdapter(vacationAdapter);
+
 
     }
     // Date picker stuff

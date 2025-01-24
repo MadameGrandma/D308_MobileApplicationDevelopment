@@ -36,6 +36,7 @@
                 <!-- The id in EditText allows us to reference the text entered here in the future -->
                 <EditText
                     android:id="@+id/vacayTitle2"
+                    android:hint="Title your vacation"
                     android:layout_width="220dp"
                     android:layout_height="50dp"></EditText>
             </LinearLayout>
@@ -53,6 +54,7 @@
                 <!-- The id in EditText allows us to reference the text entered here in the future -->
                 <EditText
                     android:id="@+id/vacayStay"
+                    android:hint="Hotel name"
                     android:layout_width="220dp"
                     android:layout_height="50dp"></EditText>
             </LinearLayout>
@@ -70,6 +72,7 @@
                 <!-- The id in EditText allows us to reference the text entered here in the future -->
                 <EditText
                     android:id="@+id/vacayStart"
+                    android:hint="MM/dd/yy"
                     android:layout_width="220dp"
                     android:layout_height="50dp"></EditText>
             </LinearLayout>
@@ -86,6 +89,7 @@
                 <!-- The id in EditText allows us to reference the text entered here in the future -->
                 <EditText
                     android:id="@+id/vacayEnd"
+                    android:hint="MM/dd/yy"
                     android:layout_width="220dp"
                     android:layout_height="50dp"></EditText>
             </LinearLayout>
