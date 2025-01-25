@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -48,8 +49,7 @@ public class ExcursionDetails extends AppCompatActivity {
     EditText editName;
     EditText editNote;
     TextView editDate;
-    Spinner editVacayID;
-    String newID;
+    int newVacationID;
 
 
     Repository repository;
@@ -70,23 +70,24 @@ public class ExcursionDetails extends AppCompatActivity {
         editName = findViewById(R.id.excursionName);
         editDate = findViewById(R.id.excursionDate);
         editNote=findViewById(R.id.note);
-        final Spinner editVacayID=findViewById(R.id.spinner);
+        //final String editVacayID=findViewById(R.id.spinner);
 
         excursionID = getIntent().getIntExtra("excursionID", -1);
         excursionTitle = getIntent().getStringExtra("title");
         date = getIntent().getStringExtra("startDate");
         vacationID = getIntent().getIntExtra("vacationID", -1);
+        Toast.makeText(this, "Vacation ID is " + vacationID, Toast.LENGTH_LONG).show();
         //vacationID = Integer.parseInt(getIntent().getStringExtra("vacayID"));
         //vacationID = getIntent().getStringExtra(("vacayID");
 
 
         editName.setText(excursionTitle);
         editDate.setText(date);
-        //editVacayID.setId(vacationID);
 
         String myFormat = "MM/dd/yy";
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
 
+        /*
         // Date picker stuff
         // Use same format for Vacation start and end dates
         startDate = new DatePickerDialog.OnDateSetListener() {
@@ -100,7 +101,7 @@ public class ExcursionDetails extends AppCompatActivity {
 
                 updateLabelStart();
             }
-        };
+        };*/
 
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
@@ -109,6 +110,7 @@ public class ExcursionDetails extends AppCompatActivity {
             return insets;
         });
 
+        // FIX ME: Date picker stuff
         editDate.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -128,8 +130,33 @@ public class ExcursionDetails extends AppCompatActivity {
         Spinner spinner = findViewById(R.id.spinner);
         ArrayList<Vacation> vacationArrayList = new ArrayList<>();
         vacationArrayList.addAll(repository.getAllVacations());
+
+        // FIX ME: Trying to get the ID from the vacation selected in the drop down list
+        ArrayList<Integer> vacationIdList= new ArrayList<>();
+        for(Vacation vacation:vacationArrayList){
+            vacationIdList.add(vacation.getVacationID());
+        }
+        ArrayAdapter<Integer> vacationIdAdapter= new ArrayAdapter<Integer>(this, android.R.layout.simple_spinner_item,vacationIdList);
+        Spinner spinner2=findViewById(R.id.spinner);
+        spinner.setAdapter(vacationIdAdapter);
+
         ArrayAdapter<Vacation> vacationAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, vacationArrayList);
         spinner.setAdapter(vacationAdapter);
+
+        spinner2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                //String newItemName = spinner2.getSelectedItem().toString();
+                long newItemID = spinner2.getSelectedItemId();
+                newVacationID = Math.toIntExact(newItemID) + 1;
+                Toast.makeText(getApplicationContext(), "You selected " + newVacationID, Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
 
     }
@@ -151,20 +178,31 @@ public class ExcursionDetails extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.excursionsave) {
             Excursion excursion;
-            if (excursionID == -1) {
-                if (repository.getAllExcursions().size() == 0)
-                    excursionID = 1;
-                else{
-                    excursionID = repository.getAllExcursions().get(repository.getAllExcursions().size() - 1).getExcursionID() + 1;
-                excursion = new Excursion(excursionID, editName.getText().toString(), editDate.getText().toString(), vacationID);
-                repository.insert(excursion);
-                Toast.makeText(ExcursionDetails.this, "Excursion saved", Toast.LENGTH_LONG).show();
-                this.finish();}
-            } else {
-                excursion = new Excursion(excursionID, editName.getText().toString(), editDate.toString(), vacationID);
-                repository.update(excursion);
-                Toast.makeText(ExcursionDetails.this, "Excursion updated", Toast.LENGTH_LONG).show();
 
+            if (excursionID == -1) {
+                Toast.makeText(this, "excursion ID is: " + excursionID, Toast.LENGTH_LONG).show();
+                if (repository.getAllExcursions().isEmpty()){
+                    excursionID = 1;
+                    Toast.makeText(this, "excursion ID is changed to: " + excursionID, Toast.LENGTH_LONG).show();
+                    excursion = new Excursion(excursionID, editName.getText().toString(), editDate.getText().toString(), newVacationID);
+                    repository.insert(excursion);
+
+                    Toast.makeText(ExcursionDetails.this, "Excursion saved", Toast.LENGTH_LONG).show();
+                    this.finish();
+                }
+                else{
+                    excursionID = repository.getAllExcursions().get(repository.getAllExcursions().size() - 1).getExcursionID() +  1;
+                    excursion = new Excursion(excursionID, editName.getText().toString(), editDate.getText().toString(), newVacationID);
+                    repository.insert(excursion);
+
+                    Toast.makeText(ExcursionDetails.this, "Excursion saved", Toast.LENGTH_LONG).show();
+                    this.finish();
+                }
+            } else {
+                excursion = new Excursion(excursionID, editName.getText().toString(), editDate.toString(), newVacationID);
+                repository.update(excursion);
+
+                Toast.makeText(ExcursionDetails.this, "Excursion updated", Toast.LENGTH_LONG).show();
                 this.finish();
             }
         }

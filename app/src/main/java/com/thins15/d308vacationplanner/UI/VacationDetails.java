@@ -224,7 +224,6 @@ public class VacationDetails extends AppCompatActivity {
                 //Toast.makeText(this, "You're in the date comparison", Toast.LENGTH_LONG).show();
                 showTimelineError();
             }
-
             //Original code resumes
             if (item.getItemId() == R.id.vacaydelete) {
                 for (Vacation vacay : repository.getAllVacations()) {
@@ -244,11 +243,12 @@ public class VacationDetails extends AppCompatActivity {
                 }
                 return true;
             }
-            // Enables top left back button
-            if (item.getItemId() == android.R.id.home) {
-                this.finish();
-                return true;
+
             }
+        // Enables top left back button
+        if (item.getItemId() == android.R.id.home) {
+            this.finish();
+            return true;
         } return true;
     }
 }

@@ -12,7 +12,7 @@ import com.thins15.d308vacationplanner.entities.Vacation;
 import com.thins15.d308vacationplanner.entities.Excursion;
 
 //Increment version number to empty db for now
-@Database(entities = {Excursion.class, Vacation.class}, version = 4, exportSchema = false)
+@Database(entities = {Excursion.class, Vacation.class}, version = 5, exportSchema = false)
 public abstract class VacationDatabaseBuilder extends RoomDatabase {
     public abstract VacationDAO vacationDAO();
     public abstract ExcursionDAO excursionDAO();
