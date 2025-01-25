@@ -150,28 +150,6 @@ public class VacationDetails extends AppCompatActivity {
         return true;
     }
 
-    // ORIGINAL VERSION
-    /*
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.vacaysave) {
-            Vacation vacation;
-            if (vacationID == -1) {
-                if (repository.getAllVacations().size() == 0) vacationID = 1;
-                else
-                    vacationID = repository.getAllVacations().get(repository.getAllVacations().size() - 1).getVacationID() + 1;
-                vacation = new Vacation(vacationID, editTitle.getText().toString(), editVacayAccomod.getText().toString(),
-                        editStartDate.getText().toString(), editEndDate.getText().toString());
-                repository.insert(vacation);
-                Toast.makeText(VacationDetails.this, "Vacation saved", Toast.LENGTH_LONG).show();
-                this.finish();
-            } else {
-                vacation = new Vacation(vacationID, editTitle.getText().toString(), editVacayAccomod.getText().toString(),
-                        editStartDate.getText().toString(), editEndDate.getEditableText().toString());
-                repository.update(vacation);
-                Toast.makeText(VacationDetails.this, "Vacation updated", Toast.LENGTH_LONG).show();
-                this.finish();
-            }
-        }*/
 
     // Validate notBlank fields on save
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -224,7 +202,6 @@ public class VacationDetails extends AppCompatActivity {
                 //Toast.makeText(this, "You're in the date comparison", Toast.LENGTH_LONG).show();
                 showTimelineError();
             }
-            //Original code resumes
             if (item.getItemId() == R.id.vacaydelete) {
                 for (Vacation vacay : repository.getAllVacations()) {
                     if (vacay.getVacationID() == vacationID) currentVacay = vacay;
