@@ -104,6 +104,7 @@ public class VacationDetails extends AppCompatActivity {
 
     }
 
+    // VALIDATION METHODS
     private boolean validateNonBlank(String title, String hotel, String startDate, String endDate) {
         if (title.isBlank() || hotel.isBlank() || startDate.isBlank() || endDate.isBlank()) {
             //showEmptyError();
@@ -143,6 +144,7 @@ public class VacationDetails extends AppCompatActivity {
     private void showSuccess() {
         Toast.makeText(this, "All fields entered correctly", Toast.LENGTH_SHORT).show();
     }
+    // END VALIDATION METHODS
 
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -151,9 +153,11 @@ public class VacationDetails extends AppCompatActivity {
     }
 
 
-    // Validate notBlank fields on save
+
+    // FIX ME: Need to add onOptionsItemSelected for vacationshare and vacation notify
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.vacaysave) {
+            // Validate no fields are blank and all are valid formats
             boolean validBlank = validateNonBlank(editTitle.getText().toString(), editVacayAccomod.getText().toString(),
                     editStartDate.getText().toString(), editEndDate.getText().toString());
             boolean validStartDate = isValidDate(editStartDate.getText().toString());
@@ -202,7 +206,16 @@ public class VacationDetails extends AppCompatActivity {
                 //Toast.makeText(this, "You're in the date comparison", Toast.LENGTH_LONG).show();
                 showTimelineError();
             }
-            if (item.getItemId() == R.id.vacaydelete) {
+        }
+
+        //FIX ME: Need to add handling for attempting to delete vacations that have not yet been saved
+        if (item.getItemId() == R.id.vacaydelete) {
+            //Toast.makeText(this, "You have entered the vacaydelete module, vacationID is " + vacationID, Toast.LENGTH_SHORT).show();
+            if (vacationID == -1) {
+                Toast.makeText(this, "Can't delete an empty vacation. " +
+                        "Please choose a saved vacation", Toast.LENGTH_LONG).show();
+                //this.finish();
+            } else {
                 for (Vacation vacay : repository.getAllVacations()) {
                     if (vacay.getVacationID() == vacationID) currentVacay = vacay;
                 }
@@ -218,10 +231,11 @@ public class VacationDetails extends AppCompatActivity {
                 } else {
                     Toast.makeText(VacationDetails.this, "Can't delete a vacation that has excursions", Toast.LENGTH_LONG).show();
                 }
-                return true;
+            }
+            return true;
             }
 
-            }
+
         // Enables top left back button
         if (item.getItemId() == android.R.id.home) {
             this.finish();

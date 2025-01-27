@@ -3,7 +3,6 @@ package com.thins15.d308vacationplanner.UI;
 import static androidx.core.app.PendingIntentCompat.getActivity;
 
 import android.app.AlarmManager;
-import android.app.DatePickerDialog;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -13,7 +12,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -34,7 +32,6 @@ import java.sql.Array;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -44,21 +41,14 @@ public class ExcursionDetails extends AppCompatActivity {
     int vacationID;
     String excursionTitle;
     String date;
-    //String excursionDate;
+    Excursion currentExcursion;
 
     EditText editName;
     EditText editNote;
     TextView editDate;
     int newVacationID;
-
-
     Repository repository;
-
-    //DatePickerDialog.OnDateSetListener startDate;
-    //final Calendar myCalendarStart = Calendar.getInstance();
     SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy", Locale.US);
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,39 +62,17 @@ public class ExcursionDetails extends AppCompatActivity {
         editName = findViewById(R.id.excursionName);
         editDate = findViewById(R.id.excursionDate);
         editNote=findViewById(R.id.note);
-        //final String editVacayID=findViewById(R.id.spinner);
 
-        excursionID = getIntent().getIntExtra("excursionID", -1);
+        excursionID = getIntent().getIntExtra("id", -1);
         excursionTitle = getIntent().getStringExtra("title");
         date = getIntent().getStringExtra("startDate");
-        vacationID = getIntent().getIntExtra("vacationID", -1);
-        Toast.makeText(this, "Vacation ID is " + vacationID, Toast.LENGTH_LONG).show();
-        //vacationID = Integer.parseInt(getIntent().getStringExtra("vacayID"));
-        //vacationID = getIntent().getStringExtra(("vacayID");
+        vacationID = getIntent().getIntExtra("vacayID", -1);
+        //Toast.makeText(this, "Vacation ID is " + vacationID, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "Excursion ID is " + excursionID, Toast.LENGTH_SHORT).show();
 
 
         editName.setText(excursionTitle);
         editDate.setText(date);
-
-        String myFormat = "MM/dd/yy";
-        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
-
-        /*
-        // Date picker stuff
-        // Use same format for Vacation start and end dates
-        startDate = new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                myCalendarStart.set(Calendar.YEAR, year);
-                myCalendarStart.set(Calendar.MONTH, month);
-                myCalendarStart.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                String myFormat = "MM/dd/yy";
-                SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
-
-                updateLabelStart();
-            }
-        };*/
-
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -112,31 +80,14 @@ public class ExcursionDetails extends AppCompatActivity {
             return insets;
         });
 
-        /*
-        // FIX ME: Date picker stuff
-        editDate.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                // Date picker stuff
-                new DatePickerDialog(ExcursionDetails.this, startDate, myCalendarStart
-                        .get(Calendar.YEAR), myCalendarStart.get(Calendar.MONTH),
-                        myCalendarStart.get(Calendar.DAY_OF_MONTH)).show();
-            }
-        });
-
-         */
 
 
 
-        //Spinner stuff
+        // SPINNER
         // Associate excursion with vacation title using spinner
-        // FIX ME: Not working
         Spinner spinner = findViewById(R.id.spinner);
         ArrayList<Vacation> vacationArrayList = new ArrayList<>();
         vacationArrayList.addAll(repository.getAllVacations());
-
-        // FIX ME: Trying to get the ID from the vacation selected in the drop down list
         ArrayList<Integer> vacationIdList= new ArrayList<>();
         for(Vacation vacation:vacationArrayList){
             vacationIdList.add(vacation.getVacationID());
@@ -154,7 +105,7 @@ public class ExcursionDetails extends AppCompatActivity {
                 //String newItemName = spinner2.getSelectedItem().toString();
                 long newItemID = spinner2.getSelectedItemId();
                 newVacationID = Math.toIntExact(newItemID) + 1;
-                Toast.makeText(getApplicationContext(), "You selected " + newVacationID, Toast.LENGTH_LONG).show();
+                //Toast.makeText(getApplicationContext(), "You selected " + newVacationID, Toast.LENGTH_LONG).show();
             }
 
             @Override
@@ -166,6 +117,7 @@ public class ExcursionDetails extends AppCompatActivity {
 
     }
 
+    // VALIDATION METHODS
     private boolean validateNonBlank(String title, String date) {
         if (title.isBlank() || date.isBlank()) {
             //showEmptyError();
@@ -197,7 +149,7 @@ public class ExcursionDetails extends AppCompatActivity {
     private void showSuccess() {
         Toast.makeText(this, "All fields entered correctly", Toast.LENGTH_SHORT).show();
     }
-
+    // END VALIDATION METHODS
 
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -207,6 +159,7 @@ public class ExcursionDetails extends AppCompatActivity {
 
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.excursionsave) {
+            // Validate no fields are blank and date is correct format
             boolean validBlank = validateNonBlank(editName.getText().toString(), editDate.getText().toString());
             boolean validDate = isValidDate(editDate.getText().toString());
 
@@ -214,16 +167,17 @@ public class ExcursionDetails extends AppCompatActivity {
                 showSuccess();
                 Excursion excursion;
                 if (excursionID == -1) {
-                    Toast.makeText(this, "excursion ID is: " + excursionID, Toast.LENGTH_LONG).show();
+                    //Toast.makeText(this, "excursion ID is: " + excursionID, Toast.LENGTH_LONG).show();
                     if (repository.getAllExcursions().isEmpty()) {
                         excursionID = 1;
-                        Toast.makeText(this, "excursion ID is changed to: " + excursionID, Toast.LENGTH_LONG).show();
+                        //Toast.makeText(this, "excursion ID is changed to: " + excursionID, Toast.LENGTH_LONG).show();
                         excursion = new Excursion(excursionID, editName.getText().toString(), editDate.getText().toString(), newVacationID);
                         repository.insert(excursion);
 
                         Toast.makeText(ExcursionDetails.this, "Excursion saved", Toast.LENGTH_LONG).show();
                         this.finish();
                     } else {
+                        //excursionID = repository.getAllExcursions().get(repository.getAllExcursions().size() - 1).getExcursionID() + 1;
                         excursionID = repository.getAllExcursions().get(repository.getAllExcursions().size() - 1).getExcursionID() + 1;
                         excursion = new Excursion(excursionID, editName.getText().toString(), editDate.getText().toString(), newVacationID);
                         repository.insert(excursion);
@@ -232,7 +186,7 @@ public class ExcursionDetails extends AppCompatActivity {
                         this.finish();
                     }
                 } else {
-                    excursion = new Excursion(excursionID, editName.getText().toString(), editDate.toString(), newVacationID);
+                    excursion = new Excursion(excursionID, editName.getText().toString(), editDate.getText().toString(), newVacationID);
                     repository.update(excursion);
 
                     Toast.makeText(ExcursionDetails.this, "Excursion updated", Toast.LENGTH_LONG).show();
@@ -251,39 +205,62 @@ public class ExcursionDetails extends AppCompatActivity {
             }
         }
 
-
-            if (item.getItemId() == R.id.share) {
-                Intent sentIntent = new Intent();
-                sentIntent.setAction(Intent.ACTION_SEND);
-                sentIntent.putExtra(Intent.EXTRA_TEXT, editNote.getText().toString() + "EXTRA_TEXT");
-                sentIntent.putExtra(Intent.EXTRA_TITLE, editNote.getText().toString() + "EXTRA_TITLE");
-                sentIntent.setType("text/plain");
-                Intent shareIntent = Intent.createChooser(sentIntent, null);
-                startActivity(shareIntent);
-                return true;
-
-            }
-            // Date picker stuff. Use for sending messages about start date/end date validation
-            if (item.getItemId() == R.id.notify) {
-                String dateFromScreen = editDate.getText().toString();
-                String myFormat = "MM/dd/yy";
-                SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
-                Date myDate = null;
+        if (item.getItemId() == R.id.excursiondelete){
+            //Toast.makeText(this, "You have entered the excursiondelete method, excursionID is " + excursionID, Toast.LENGTH_SHORT).show();
+            if (excursionID == -1){
+                Toast.makeText(this, "Can't delete an empty excursion. " +
+                        "Please choose a saved excursion", Toast.LENGTH_LONG).show();
+                //this.finish();
+            } else {
+                for (Excursion excursion : repository.getAllExcursions()) {
+                    if (excursion.getExcursionID() == excursionID) {
+                        currentExcursion = excursion;
+                    }
+                }
 
                 try {
-                    myDate = sdf.parse(dateFromScreen);
-                } catch (ParseException e) {
-                    e.printStackTrace();
+                    repository.delete(currentExcursion);
+                    Toast.makeText(this, currentExcursion.getExcursionTitle() + " was deleted", Toast.LENGTH_LONG).show();
+                    this.finish();
+                } catch (Exception e) {
+                    Toast.makeText(this, "Couldn't delete excursion", Toast.LENGTH_LONG).show();
                 }
-                Long trigger = myDate.getTime();
-                Intent intent = new Intent(ExcursionDetails.this, MyReceiver.class);
-                intent.putExtra("key", "Message I want to see");
-                PendingIntent sender = PendingIntent.getBroadcast(ExcursionDetails.this, ++MainActivity.numAlert, intent, PendingIntent.FLAG_IMMUTABLE);
-                AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-                alarmManager.set(AlarmManager.RTC_WAKEUP, trigger, sender);
-
-                return true;
             }
+        }
+
+        if (item.getItemId() == R.id.excursionshare) {
+            Intent sentIntent = new Intent();
+            sentIntent.setAction(Intent.ACTION_SEND);
+            //sentIntent.putExtra(Intent.EXTRA_TEXT, editNote.getText().toString() + "EXTRA_TEXT");
+            sentIntent.putExtra(Intent.EXTRA_TEXT, editNote.getText().toString());
+            //sentIntent.putExtra(Intent.EXTRA_TITLE, editNote.getText().toString() + "EXTRA_TITLE");
+            sentIntent.setType("text/plain");
+            Intent shareIntent = Intent.createChooser(sentIntent, null);
+            startActivity(shareIntent);
+            return true;
+
+        }
+            // Date picker stuff. Use for sending messages about start date/end date validation
+        if (item.getItemId() == R.id.excursionnotify) {
+            String dateFromScreen = editDate.getText().toString();
+            String myFormat = "MM/dd/yy";
+            SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+            Date myDate = null;
+
+            try {
+                myDate = sdf.parse(dateFromScreen);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            Long trigger = myDate.getTime();
+            Intent intent = new Intent(ExcursionDetails.this, MyReceiver.class);
+            intent.putExtra("key", "Message I want to see");
+            PendingIntent sender = PendingIntent.getBroadcast(ExcursionDetails.this, ++MainActivity.numAlert, intent, PendingIntent.FLAG_IMMUTABLE);
+            AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+            alarmManager.set(AlarmManager.RTC_WAKEUP, trigger, sender);
+
+            return true;
+        }
 
         // Enables top left back button
         if (item.getItemId() == android.R.id.home) {
