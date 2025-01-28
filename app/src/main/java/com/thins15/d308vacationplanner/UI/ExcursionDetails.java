@@ -4,6 +4,7 @@ import static androidx.core.app.PendingIntentCompat.getActivity;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -33,6 +34,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
 
 public class ExcursionDetails extends AppCompatActivity {
@@ -48,7 +50,15 @@ public class ExcursionDetails extends AppCompatActivity {
     TextView editDate;
     int newVacationID;
     Repository repository;
+    Vacation currentVacay;
     SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy", Locale.US);
+
+    HashMap<Integer, Vacation> vacationHashMap = new HashMap<>();
+
+
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +77,7 @@ public class ExcursionDetails extends AppCompatActivity {
         excursionTitle = getIntent().getStringExtra("title");
         date = getIntent().getStringExtra("startDate");
         vacationID = getIntent().getIntExtra("vacayID", -1);
-        //Toast.makeText(this, "Vacation ID is " + vacationID, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Vacation ID is " + vacationID, Toast.LENGTH_SHORT).show();
         //Toast.makeText(this, "Excursion ID is " + excursionID, Toast.LENGTH_SHORT).show();
 
 
@@ -105,7 +115,7 @@ public class ExcursionDetails extends AppCompatActivity {
                 //String newItemName = spinner2.getSelectedItem().toString();
                 long newItemID = spinner2.getSelectedItemId();
                 newVacationID = Math.toIntExact(newItemID) + 1;
-                //Toast.makeText(getApplicationContext(), "You selected " + newVacationID, Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "You selected " + newVacationID, Toast.LENGTH_LONG).show();
             }
 
             @Override
@@ -140,12 +150,77 @@ public class ExcursionDetails extends AppCompatActivity {
             return false;
         }
     }
+
+
+    //FIX ME: This thing just messed up man
+    // Module keeps trying to use Vacation with ID 1, instead of basing it off of the selected ID
+    // Unsure how to call object using the new ID to validate the start & end dates
+    public boolean isInDateRange(String date, int vacayID) throws ParseException {
+        ArrayList<Vacation> vacationArrayList = new ArrayList<>();
+        vacationArrayList.addAll(repository.getAllVacations());
+        Vacation vacay = vacationArrayList.get(vacayID - 1);
+        //String startVacay = vacay.getStartDate();
+        Date startVacay = sdf.parse(vacay.getStartDate());
+        //String endVacay = vacay.getEndDate();
+        Date endVacay = sdf.parse(vacay.getEndDate());
+        Date dateDate = sdf.parse(date);
+
+        Toast.makeText(this, "startVacay: " + startVacay, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "endVacay: " + endVacay, Toast.LENGTH_SHORT).show();
+        // Check that date is after/on startVacay or before/on endVacay
+        try {
+            //if (date.compareTo(startVacay) > 0 || date.compareTo(startVacay) == 0) {
+            if (dateDate.compareTo(startVacay) > 0 || dateDate.compareTo(startVacay) == 0) {
+                Toast.makeText(this, "Excursion is on or after vacation start", Toast.LENGTH_SHORT).show();
+                //if (date.compareTo(endVacay) < 0 || date.compareTo(startVacay) == 0) {
+                if (dateDate.compareTo(endVacay) < 0 || dateDate.compareTo(startVacay) == 0) {
+                    Toast.makeText(this, "Excursion is on or before vacation end", Toast.LENGTH_SHORT).show();
+                    return true;
+                } else {
+                    Toast.makeText(this, "Excursion is after vacation end. Please choose another date.", Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+            } else {
+                Toast.makeText(this, "Excursion is before vacation starts. Please choose another date.", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        } catch (Exception e) {
+            //throw new RuntimeException(e);
+            Toast.makeText(this, "Something went wrong with daterange check", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+    }
+
+
+/*
+    public boolean isInDateRange(String date) {
+
+
+        vacation.setVacationID(newVacationID);
+
+        String startDate = vacation.getStartDate();
+        String endDate = vacation.getEndDate();
+
+        Toast.makeText(this, "Vacation start: " + startDate + "End: " + endDate, Toast.LENGTH_SHORT).show();
+
+
+
+        return true;
+    }
+
+      */
+
+
+    private void showRangeError(){
+        Toast.makeText(this, "Excursion does not take place during vacation dates", Toast.LENGTH_SHORT).show();
+    }
     private void showEmptyError() {
         Toast.makeText(this, "Please complete all fields before saving", Toast.LENGTH_LONG).show();
     }
     private void showFormatError() {
         Toast.makeText(this, "Please use the correct date format of MM/dd/yy", Toast.LENGTH_LONG).show();
     }
+
     private void showSuccess() {
         Toast.makeText(this, "All fields entered correctly", Toast.LENGTH_SHORT).show();
     }
@@ -159,38 +234,57 @@ public class ExcursionDetails extends AppCompatActivity {
 
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.excursionsave) {
-            // Validate no fields are blank and date is correct format
+            // Validate no fields are blank, date is correct format, and excursion occurs during vacation dates
             boolean validBlank = validateNonBlank(editName.getText().toString(), editDate.getText().toString());
             boolean validDate = isValidDate(editDate.getText().toString());
+            //
+            // BROKEN HERE. Prob is module is only comparing the excursion dates to the first vacay
+            // in the db, not the dates for the selected vacay. Need to figure out how to retrieve
+            // vacation by id, and gather start and end dates to be used for validation
+
+            // Toast.makeText(this, "Right before validrange module", Toast.LENGTH_SHORT).show();
+            boolean validRange = false;
+            try {
+                validRange = isInDateRange(editDate.getText().toString(), newVacationID);
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
+            }
+            //Toast.makeText(this, "Excursion occurs during vacay: " + validRange, Toast.LENGTH_LONG).show();
+
 
             if (validBlank && validDate) {
-                showSuccess();
-                Excursion excursion;
-                if (excursionID == -1) {
-                    //Toast.makeText(this, "excursion ID is: " + excursionID, Toast.LENGTH_LONG).show();
-                    if (repository.getAllExcursions().isEmpty()) {
-                        excursionID = 1;
-                        //Toast.makeText(this, "excursion ID is changed to: " + excursionID, Toast.LENGTH_LONG).show();
-                        excursion = new Excursion(excursionID, editName.getText().toString(), editDate.getText().toString(), newVacationID);
-                        repository.insert(excursion);
+                if (validRange) {
+                    showSuccess();
+                    Excursion excursion;
+                    if (excursionID == -1) {
+                        //Toast.makeText(this, "excursion ID is: " + excursionID, Toast.LENGTH_LONG).show();
+                        if (repository.getAllExcursions().isEmpty()) {
+                            excursionID = 1;
+                            //Toast.makeText(this, "excursion ID is changed to: " + excursionID, Toast.LENGTH_LONG).show();
+                            excursion = new Excursion(excursionID, editName.getText().toString(), editDate.getText().toString(), newVacationID);
+                            repository.insert(excursion);
 
-                        Toast.makeText(ExcursionDetails.this, "Excursion saved", Toast.LENGTH_LONG).show();
-                        this.finish();
+                            Toast.makeText(ExcursionDetails.this, "Excursion saved", Toast.LENGTH_LONG).show();
+                            this.finish();
+                        } else {
+                            //Increment the excursionID
+                            excursionID = repository.getAllExcursions().get(repository.getAllExcursions().size() - 1).getExcursionID() + 1;
+                            excursion = new Excursion(excursionID, editName.getText().toString(), editDate.getText().toString(), newVacationID);
+                            repository.insert(excursion);
+
+                            Toast.makeText(ExcursionDetails.this, "Excursion saved", Toast.LENGTH_LONG).show();
+                            this.finish();
+                        }
                     } else {
-                        //excursionID = repository.getAllExcursions().get(repository.getAllExcursions().size() - 1).getExcursionID() + 1;
-                        excursionID = repository.getAllExcursions().get(repository.getAllExcursions().size() - 1).getExcursionID() + 1;
                         excursion = new Excursion(excursionID, editName.getText().toString(), editDate.getText().toString(), newVacationID);
-                        repository.insert(excursion);
+                        repository.update(excursion);
 
-                        Toast.makeText(ExcursionDetails.this, "Excursion saved", Toast.LENGTH_LONG).show();
+                        Toast.makeText(this, "Excursion updated", Toast.LENGTH_LONG).show();
                         this.finish();
                     }
-                } else {
-                    excursion = new Excursion(excursionID, editName.getText().toString(), editDate.getText().toString(), newVacationID);
-                    repository.update(excursion);
-
-                    Toast.makeText(ExcursionDetails.this, "Excursion updated", Toast.LENGTH_LONG).show();
-                    this.finish();
+                } else if (!validRange) {
+                    //Toast.makeText(this, "You're checking for excursion occurring during vacation dates", Toast.LENGTH_LONG).show();
+                    showRangeError();
                 }
             } else if (!validBlank) {
                 //Toast.makeText(this, "You're checking for blank spaces", Toast.LENGTH_LONG).show();

@@ -8,7 +8,6 @@ public class Vacation {
     @PrimaryKey(autoGenerate = true)
     private int vacationID;
     private String vacationTitle;
-    // Vacation Accomodations
     private String vacationAccomod;
 
     private String startDate;

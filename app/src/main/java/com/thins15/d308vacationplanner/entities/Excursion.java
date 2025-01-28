@@ -3,6 +3,8 @@ package com.thins15.d308vacationplanner.entities;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import java.util.HashMap;
+
 // Excursions should include title and date
 @Entity(tableName = "excursions")
 public class Excursion {
@@ -11,6 +13,8 @@ public class Excursion {
     private String excursionTitle;
     private String excursionDate;
     private int vacationID;
+
+
 
     public int getExcursionID() {
         return excursionID;
