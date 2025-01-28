@@ -1,5 +1,8 @@
 package com.thins15.d308vacationplanner.UI;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -156,6 +159,7 @@ public class VacationDetails extends AppCompatActivity {
 
     // FIX ME: Need to add onOptionsItemSelected for vacationshare and vacation notify
     public boolean onOptionsItemSelected(MenuItem item) {
+        // VACATION SAVE
         if (item.getItemId() == R.id.vacaysave) {
             // Validate no fields are blank and all are valid formats
             boolean validBlank = validateNonBlank(editTitle.getText().toString(), editVacayAccomod.getText().toString(),
@@ -207,8 +211,7 @@ public class VacationDetails extends AppCompatActivity {
                 showTimelineError();
             }
         }
-
-        //FIX ME: Need to add handling for attempting to delete vacations that have not yet been saved
+        // VACATION DELETE
         if (item.getItemId() == R.id.vacaydelete) {
             //Toast.makeText(this, "You have entered the vacaydelete module, vacationID is " + vacationID, Toast.LENGTH_SHORT).show();
             if (vacationID == -1) {
@@ -234,6 +237,53 @@ public class VacationDetails extends AppCompatActivity {
             }
             return true;
             }
+
+
+        // VACATION SHARE
+        if (item.getItemId() == R.id.vacationshare) {
+            Intent sentIntent = new Intent();
+            sentIntent.setAction(Intent.ACTION_SEND);
+            sentIntent.putExtra(Intent.EXTRA_TITLE, "Would you like to share your vacation details?");
+
+            sentIntent.putExtra(Intent.EXTRA_TEXT, "Here's my vacation details!" +
+                    "\n\nVacation Title: " + editTitle.getText().toString() +
+                    "\nAccomodations: " + editVacayAccomod.getText().toString() +
+                    "\nStart Date: " + editStartDate.getText().toString() +
+                    "\nEnd Date: " + editEndDate.getText().toString());
+
+            sentIntent.setType("text/plain");
+            Intent shareIntent = Intent.createChooser(sentIntent, Intent.EXTRA_TITLE);
+            startActivity(shareIntent);
+            return true;
+        }
+
+
+
+
+        /*
+        // VACATION NOTIFY
+        if (item.getItemId() == R.id.vacationnotify) {
+            String dateFromScreen = editDate.getText().toString();
+            String myFormat = "MM/dd/yy";
+            SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+            Date myDate = null;
+
+            try {
+                myDate = sdf.parse(dateFromScreen);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            Long trigger = myDate.getTime();
+            Intent intent = new Intent(ExcursionDetails.this, MyReceiver.class);
+            intent.putExtra("key", "Message I want to see");
+            PendingIntent sender = PendingIntent.getBroadcast(ExcursionDetails.this, ++MainActivity.numAlert, intent, PendingIntent.FLAG_IMMUTABLE);
+            AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+            alarmManager.set(AlarmManager.RTC_WAKEUP, trigger, sender);
+
+            return true;
+        }
+
+         */
 
 
         // Enables top left back button
