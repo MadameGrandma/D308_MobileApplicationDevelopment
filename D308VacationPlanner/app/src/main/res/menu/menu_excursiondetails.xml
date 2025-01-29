@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:title="Save Excursion"
+        android:id="@+id/excursionsave"/>
+    <item android:title="Delete Excursion"
+        android:id="@+id/excursiondelete"/>
+    <item android:title="Share Note"
+        android:id="@+id/excursionshare"/>
+    <item android:title="Notify on Excursion Date"
+        android:orderInCategory="100"
+        android:id="@+id/excursionnotify"/>
+</menu>
