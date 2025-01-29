@@ -109,6 +109,20 @@ public class VacationDetails extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onResume(){
+        super.onResume();
+        RecyclerView recyclerView = findViewById(R.id.excursionRecyclerView);
+        final ExcursionAdapter excursionAdapter = new ExcursionAdapter(this);
+        recyclerView.setAdapter(excursionAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        List<Excursion> filteredExcursions = new ArrayList<>();
+        for (Excursion e : repository.getAllExcursions()) {
+            if (e.getVacationID() == vacationID) filteredExcursions.add(e);
+        }
+        excursionAdapter.setExcursions(filteredExcursions);
+    }
+
     // VALIDATION METHODS
     private boolean validateNonBlank(String title, String hotel, String startDate, String endDate) {
         if (title.isBlank() || hotel.isBlank() || startDate.isBlank() || endDate.isBlank()) {
@@ -324,8 +338,6 @@ public class VacationDetails extends AppCompatActivity {
                 showTimelineError();
             }
         }
-
-
 
         // Enables top left back button
         if (item.getItemId() == android.R.id.home) {

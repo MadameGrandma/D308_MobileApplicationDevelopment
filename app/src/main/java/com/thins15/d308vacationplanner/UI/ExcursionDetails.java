@@ -70,7 +70,7 @@ public class ExcursionDetails extends AppCompatActivity {
         excursionTitle = getIntent().getStringExtra("title");
         date = getIntent().getStringExtra("startDate");
         vacationID = getIntent().getIntExtra("vacayID", -1);
-        Toast.makeText(this, "Vacation ID is " + vacationID, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "Vacation ID is " + vacationID, Toast.LENGTH_SHORT).show();
         //Toast.makeText(this, "Excursion ID is " + excursionID, Toast.LENGTH_SHORT).show();
 
 
@@ -108,7 +108,7 @@ public class ExcursionDetails extends AppCompatActivity {
                 //String newItemName = spinner2.getSelectedItem().toString();
                 long newItemID = spinner2.getSelectedItemId();
                 newVacationID = Math.toIntExact(newItemID) + 1;
-                Toast.makeText(getApplicationContext(), "You selected " + newVacationID, Toast.LENGTH_LONG).show();
+                //Toast.makeText(getApplicationContext(), "You selected " + newVacationID, Toast.LENGTH_LONG).show();
             }
 
             @Override
@@ -159,9 +159,9 @@ public class ExcursionDetails extends AppCompatActivity {
         // Check that date is after/on startVacay or before/on endVacay
         try {
             if (dateDate.compareTo(startVacay) > 0 || dateDate.compareTo(startVacay) == 0) {
-                Toast.makeText(this, "Excursion is on or after vacation start", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, "Excursion is on or after vacation start", Toast.LENGTH_SHORT).show();
                 if (dateDate.compareTo(endVacay) < 0 || dateDate.compareTo(startVacay) == 0) {
-                    Toast.makeText(this, "Excursion is on or before vacation end", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(this, "Excursion is on or before vacation end", Toast.LENGTH_SHORT).show();
                     return true;
                 } else {
                     Toast.makeText(this, "Excursion is after vacation end.", Toast.LENGTH_SHORT).show();
