@@ -188,8 +188,8 @@ public class ExcursionDetails extends AppCompatActivity {
     private void showRangeError(){
         Toast.makeText(this, "Please choose a new date for your excursion", Toast.LENGTH_SHORT).show();
     }
-    private void showEmptyError() {
-        Toast.makeText(this, "Please complete all fields before saving", Toast.LENGTH_LONG).show();
+    private void showEmptyError(String action) {
+        Toast.makeText(this, "Please complete all fields before " + action, Toast.LENGTH_LONG).show();
     }
     private void showFormatError() {
         Toast.makeText(this, "Please use the correct date format of MM/dd/yy", Toast.LENGTH_LONG).show();
@@ -254,7 +254,7 @@ public class ExcursionDetails extends AppCompatActivity {
                 }
             } else if (!validBlank) {
                 //Toast.makeText(this, "You're checking for blank spaces", Toast.LENGTH_LONG).show();
-                showEmptyError();
+                showEmptyError("saving.");
             } else if (!validDate) {
                 //Toast.makeText(this, "You're in the date format validation", Toast.LENGTH_LONG).show();
 
@@ -291,9 +291,10 @@ public class ExcursionDetails extends AppCompatActivity {
         if (item.getItemId() == R.id.excursionshare) {
             Intent sentIntent = new Intent();
             sentIntent.setAction(Intent.ACTION_SEND);
-            //sentIntent.putExtra(Intent.EXTRA_TEXT, editNote.getText().toString() + "EXTRA_TEXT");
-            sentIntent.putExtra(Intent.EXTRA_TEXT, editNote.getText().toString());
-            //sentIntent.putExtra(Intent.EXTRA_TITLE, editNote.getText().toString() + "EXTRA_TITLE");
+            sentIntent.putExtra(Intent.EXTRA_TITLE, "Would you like to share your excursion details?");
+            sentIntent.putExtra(Intent.EXTRA_TEXT, "Here's my excursion details!" +
+                    "\n\nExcursion Title: " + editName.getText().toString() +
+                    "\nDate: " + editDate.getText().toString());
             sentIntent.setType("text/plain");
             Intent shareIntent = Intent.createChooser(sentIntent, null);
             startActivity(shareIntent);
@@ -302,24 +303,42 @@ public class ExcursionDetails extends AppCompatActivity {
         }
             // Date picker stuff. Use for sending messages about start date/end date validation
         if (item.getItemId() == R.id.excursionnotify) {
-            String dateFromScreen = editDate.getText().toString();
-            String myFormat = "MM/dd/yy";
-            SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
-            Date myDate = null;
+            boolean validBlank = validateNonBlank(editName.getText().toString(), editDate.getText().toString());
+            boolean validDate = isValidDate(editDate.getText().toString());
 
-            try {
-                myDate = sdf.parse(dateFromScreen);
-            } catch (ParseException e) {
-                e.printStackTrace();
+            if (validBlank && validDate) {
+
+                String excursionTitle = editName.getText().toString();
+                String dateFromScreen = editDate.getText().toString();
+                String myFormat = "MM/dd/yy";
+                SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+                Date myDate = null;
+
+                try {
+                    myDate = sdf.parse(dateFromScreen);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                Long trigger = myDate.getTime();
+                Intent intent = new Intent(ExcursionDetails.this, MyReceiver.class);
+                intent.putExtra("key", "Your excursion \"" + excursionTitle + "\" is today!");
+                PendingIntent sender = PendingIntent.getBroadcast(ExcursionDetails.this, ++MainActivity.numAlert, intent, PendingIntent.FLAG_IMMUTABLE);
+                AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+                alarmManager.set(AlarmManager.RTC_WAKEUP, trigger, sender);
+
+                Toast.makeText(this, "Excursion notifications has been set", Toast.LENGTH_LONG).show();
+                this.finish();
+            } else if (!validBlank) {
+                //Toast.makeText(this, "You're checking for blank spaces", Toast.LENGTH_LONG).show();
+                showEmptyError("setting notification.");
+            } else if (!validDate) {
+                //Toast.makeText(this, "You're in the date format validation", Toast.LENGTH_LONG).show();
+
+                //FIX ME: This is returning correct format even if the year is in yy and not yyyy
+                // also allowing letters into format. May need to change to regex
+                // this looks helpful: https://stackoverflow.com/questions/226910/how-to-sanity-check-a-date-in-java
+                showFormatError();
             }
-            Long trigger = myDate.getTime();
-            Intent intent = new Intent(ExcursionDetails.this, MyReceiver.class);
-            intent.putExtra("key", "Message I want to see");
-            PendingIntent sender = PendingIntent.getBroadcast(ExcursionDetails.this, ++MainActivity.numAlert, intent, PendingIntent.FLAG_IMMUTABLE);
-            AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-            alarmManager.set(AlarmManager.RTC_WAKEUP, trigger, sender);
-
-            return true;
         }
 
         // Enables top left back button
