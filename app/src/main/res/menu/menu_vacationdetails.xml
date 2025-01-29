@@ -9,7 +9,7 @@
         android:id="@+id/vacaydelete" />
     <item android:title="Share Vacation"
         android:id="@+id/vacationshare"/>
-    <item android:title="Notify"
+    <item android:title="Notify on Vacation Dates"
         android:orderInCategory="100"
         android:id="@+id/vacationnotify"/>
 </menu>

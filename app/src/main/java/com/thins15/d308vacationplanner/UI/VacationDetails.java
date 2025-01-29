@@ -133,8 +133,8 @@ public class VacationDetails extends AppCompatActivity {
     }
 
 
-    private void showEmptyError() {
-        Toast.makeText(this, "Please complete all fields before saving", Toast.LENGTH_LONG).show();
+    private void showEmptyError(String action) {
+        Toast.makeText(this, "Please complete all fields before " + action, Toast.LENGTH_LONG).show();
     }
 
     private void showFormatError() {
@@ -198,7 +198,7 @@ public class VacationDetails extends AppCompatActivity {
                 }
             } else if (!validBlank) {
                 //Toast.makeText(this, "You're checking for blank spaces", Toast.LENGTH_LONG).show();
-                showEmptyError();
+                showEmptyError("saving.");
             } else if (!validStartDate || !validEndDate) {
                 //Toast.makeText(this, "You're in the date format validation", Toast.LENGTH_LONG).show();
 
@@ -258,32 +258,77 @@ public class VacationDetails extends AppCompatActivity {
         }
 
 
-
-
-        /*
         // VACATION NOTIFY
         if (item.getItemId() == R.id.vacationnotify) {
-            String dateFromScreen = editDate.getText().toString();
-            String myFormat = "MM/dd/yy";
-            SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
-            Date myDate = null;
-
+            boolean validBlank = validateNonBlank(editTitle.getText().toString(), editVacayAccomod.getText().toString(),
+                    editStartDate.getText().toString(), editEndDate.getText().toString());
+            boolean validStartDate = isValidDate(editStartDate.getText().toString());
+            boolean validEndDate = isValidDate(editEndDate.getText().toString());
+            Date dateEndDate = null;
+            Date dateStartDate = null;
             try {
-                myDate = sdf.parse(dateFromScreen);
+                dateStartDate = sdf.parse(editStartDate.getText().toString());
+                dateEndDate = sdf.parse(editEndDate.getText().toString());
             } catch (ParseException e) {
-                e.printStackTrace();
+                //Toast.makeText(this, "In parse date try/catch", Toast.LENGTH_LONG).show();
             }
-            Long trigger = myDate.getTime();
-            Intent intent = new Intent(ExcursionDetails.this, MyReceiver.class);
-            intent.putExtra("key", "Message I want to see");
-            PendingIntent sender = PendingIntent.getBroadcast(ExcursionDetails.this, ++MainActivity.numAlert, intent, PendingIntent.FLAG_IMMUTABLE);
-            AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-            alarmManager.set(AlarmManager.RTC_WAKEUP, trigger, sender);
+            String vacayTitle = editTitle.getText().toString();
 
-            return true;
+            if (validBlank && validStartDate && validEndDate && Objects.requireNonNull(dateEndDate).compareTo(dateStartDate) > 0) {
+                showSuccess();
+                // NOTIFY OF START DATE
+                String startDateFromScreen = editStartDate.getText().toString();
+                String myFormat = "MM/dd/yy";
+                SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+                Date myDate = null;
+
+                try {
+                    myDate = sdf.parse(startDateFromScreen);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                Long trigger = myDate.getTime();
+                Intent intent = new Intent(VacationDetails.this, MyReceiver.class);
+                intent.putExtra("key", "Your vacation \"" + vacayTitle + "\" is starting today!");
+                PendingIntent sender = PendingIntent.getBroadcast(VacationDetails.this, ++MainActivity.numAlert, intent, PendingIntent.FLAG_IMMUTABLE);
+                AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+                alarmManager.set(AlarmManager.RTC_WAKEUP, trigger, sender);
+
+
+                // NOTIFY OF END DATE
+                String endDateFromScreen = editEndDate.getText().toString();
+
+                try {
+                    myDate = sdf.parse(endDateFromScreen);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                Long triggerEnd = myDate.getTime();
+                Intent intentEnd = new Intent(VacationDetails.this, MyReceiver.class);
+                intentEnd.putExtra("key", "Your vacation \"" + vacayTitle + "\" is ending today!");
+                PendingIntent senderEnd = PendingIntent.getBroadcast(VacationDetails.this, ++MainActivity.numAlert, intentEnd, PendingIntent.FLAG_IMMUTABLE);
+                AlarmManager alarmManagerEnd = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+                alarmManagerEnd.set(AlarmManager.RTC_WAKEUP, triggerEnd, senderEnd);
+
+                Toast.makeText(this, "Vacation notifications have been set", Toast.LENGTH_LONG).show();
+                this.finish();
+
+            } else if (!validBlank) {
+                //Toast.makeText(this, "You're checking for blank spaces", Toast.LENGTH_LONG).show();
+                showEmptyError("setting notifications.");
+            } else if (!validStartDate || !validEndDate) {
+                //Toast.makeText(this, "You're in the date format validation", Toast.LENGTH_LONG).show();
+
+                //FIX ME: This is returning correct format even if the year is in yy and not yyyy
+                // also allowing letters into format. May need to change to regex
+                // this looks helpful: https://stackoverflow.com/questions/226910/how-to-sanity-check-a-date-in-java
+                showFormatError();
+            } else if ((dateEndDate.compareTo(dateStartDate)) <= 0) {
+                //Toast.makeText(this, "You're in the date comparison", Toast.LENGTH_LONG).show();
+                showTimelineError();
+            }
         }
 
-         */
 
 
         // Enables top left back button
