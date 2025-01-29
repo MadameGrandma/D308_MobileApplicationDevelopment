@@ -72,7 +72,7 @@
                 <!-- The id in EditText allows us to reference the text entered here in the future -->
                 <EditText
                     android:id="@+id/vacayStart"
-                    android:hint="MM/dd/yy"
+                    android:hint="MM/dd/yyyy"
                     android:layout_width="220dp"
                     android:layout_height="50dp"></EditText>
             </LinearLayout>
@@ -89,7 +89,7 @@
                 <!-- The id in EditText allows us to reference the text entered here in the future -->
                 <EditText
                     android:id="@+id/vacayEnd"
-                    android:hint="MM/dd/yy"
+                    android:hint="MM/dd/yyyy"
                     android:layout_width="220dp"
                     android:layout_height="50dp"></EditText>
             </LinearLayout>

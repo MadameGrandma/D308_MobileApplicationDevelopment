@@ -48,6 +48,8 @@ public class VacationDetails extends AppCompatActivity {
 
     Repository repository;
 
+    String formatted;
+    String formatted2;
     SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy", Locale.US);
 
 
@@ -120,16 +122,18 @@ public class VacationDetails extends AppCompatActivity {
         }
     }
 
-    public boolean isValidDate(String date){
+    public boolean isValidDate(String date) {
 
         try {
             sdf.setLenient(false);
             sdf.parse(date);
             return true;
-
         } catch (ParseException e) {
+            //throw new RuntimeException(e);
             return false;
         }
+
+
     }
 
 
@@ -138,7 +142,7 @@ public class VacationDetails extends AppCompatActivity {
     }
 
     private void showFormatError() {
-        Toast.makeText(this, "Please use the correct date format of MM/dd/yy", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "Please use the correct date format of MM/dd/yyyy", Toast.LENGTH_LONG).show();
     }
 
     private void showTimelineError() {
@@ -155,9 +159,6 @@ public class VacationDetails extends AppCompatActivity {
         return true;
     }
 
-
-
-    // FIX ME: Need to add onOptionsItemSelected for vacationshare and vacation notify
     public boolean onOptionsItemSelected(MenuItem item) {
         // VACATION SAVE
         if (item.getItemId() == R.id.vacaysave) {
@@ -171,10 +172,12 @@ public class VacationDetails extends AppCompatActivity {
             Date dateStartDate = null;
             try {
                 dateStartDate = sdf.parse(editStartDate.getText().toString());
+                 formatted = sdf.format(dateStartDate);
+                //Toast.makeText(this, "This is what format looks like with sdf.format " + formatted, Toast.LENGTH_SHORT).show();
                 dateEndDate = sdf.parse(editEndDate.getText().toString());
+                formatted2 = sdf.format(dateEndDate);
             } catch (ParseException e) {
                 //Toast.makeText(this, "In parse date try/catch", Toast.LENGTH_LONG).show();
-                // FIX ME: need better exception handling here
             }
 
             if (validBlank && validStartDate && validEndDate && Objects.requireNonNull(dateEndDate).compareTo(dateStartDate) > 0) {
@@ -186,6 +189,7 @@ public class VacationDetails extends AppCompatActivity {
                         vacationID = repository.getAllVacations().get(repository.getAllVacations().size() - 1).getVacationID() + 1;
                     vacation = new Vacation(vacationID, editTitle.getText().toString(), editVacayAccomod.getText().toString(),
                             editStartDate.getText().toString(), editEndDate.getText().toString());
+
                     repository.insert(vacation);
                     Toast.makeText(VacationDetails.this, "Vacation saved", Toast.LENGTH_LONG).show();
                     this.finish();
@@ -201,10 +205,6 @@ public class VacationDetails extends AppCompatActivity {
                 showEmptyError("saving.");
             } else if (!validStartDate || !validEndDate) {
                 //Toast.makeText(this, "You're in the date format validation", Toast.LENGTH_LONG).show();
-
-                //FIX ME: This is returning correct format even if the year is in yy and not yyyy
-                // also allowing letters into format. May need to change to regex
-                // this looks helpful: https://stackoverflow.com/questions/226910/how-to-sanity-check-a-date-in-java
                 showFormatError();
             } else if ((dateEndDate.compareTo(dateStartDate)) <= 0) {
                 //Toast.makeText(this, "You're in the date comparison", Toast.LENGTH_LONG).show();
@@ -278,8 +278,8 @@ public class VacationDetails extends AppCompatActivity {
                 showSuccess();
                 // NOTIFY OF START DATE
                 String startDateFromScreen = editStartDate.getText().toString();
-                String myFormat = "MM/dd/yy";
-                SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+                //String myFormat = "MM/dd/yy";
+                //SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
                 Date myDate = null;
 
                 try {
@@ -318,10 +318,6 @@ public class VacationDetails extends AppCompatActivity {
                 showEmptyError("setting notifications.");
             } else if (!validStartDate || !validEndDate) {
                 //Toast.makeText(this, "You're in the date format validation", Toast.LENGTH_LONG).show();
-
-                //FIX ME: This is returning correct format even if the year is in yy and not yyyy
-                // also allowing letters into format. May need to change to regex
-                // this looks helpful: https://stackoverflow.com/questions/226910/how-to-sanity-check-a-date-in-java
                 showFormatError();
             } else if ((dateEndDate.compareTo(dateStartDate)) <= 0) {
                 //Toast.makeText(this, "You're in the date comparison", Toast.LENGTH_LONG).show();

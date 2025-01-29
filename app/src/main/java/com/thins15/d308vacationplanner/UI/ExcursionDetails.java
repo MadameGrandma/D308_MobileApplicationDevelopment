@@ -50,14 +50,7 @@ public class ExcursionDetails extends AppCompatActivity {
     TextView editDate;
     int newVacationID;
     Repository repository;
-    Vacation currentVacay;
     SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy", Locale.US);
-
-    HashMap<Integer, Vacation> vacationHashMap = new HashMap<>();
-
-
-
-
 
 
     @Override
@@ -192,7 +185,7 @@ public class ExcursionDetails extends AppCompatActivity {
         Toast.makeText(this, "Please complete all fields before " + action, Toast.LENGTH_LONG).show();
     }
     private void showFormatError() {
-        Toast.makeText(this, "Please use the correct date format of MM/dd/yy", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "Please use the correct date format of MM/dd/yyyy", Toast.LENGTH_LONG).show();
     }
 
     private void showSuccess() {
@@ -257,10 +250,6 @@ public class ExcursionDetails extends AppCompatActivity {
                 showEmptyError("saving.");
             } else if (!validDate) {
                 //Toast.makeText(this, "You're in the date format validation", Toast.LENGTH_LONG).show();
-
-                //FIX ME: This is returning correct format even if the year is in yy and not yyyy
-                // also allowing letters into format. May need to change to regex
-                // this looks helpful: https://stackoverflow.com/questions/226910/how-to-sanity-check-a-date-in-java
                 showFormatError();
             }
         }
@@ -333,11 +322,7 @@ public class ExcursionDetails extends AppCompatActivity {
                 showEmptyError("setting notification.");
             } else if (!validDate) {
                 //Toast.makeText(this, "You're in the date format validation", Toast.LENGTH_LONG).show();
-
-                //FIX ME: This is returning correct format even if the year is in yy and not yyyy
-                // also allowing letters into format. May need to change to regex
-                // this looks helpful: https://stackoverflow.com/questions/226910/how-to-sanity-check-a-date-in-java
-                showFormatError();
+              showFormatError();
             }
         }
 

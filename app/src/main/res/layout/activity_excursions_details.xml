@@ -53,10 +53,11 @@
                 android:text="Date"/>
 
             <EditText
-                android:hint="MM/dd/yy"
+                android:hint="MM/dd/yyyy"
                 android:layout_width="220dp"
                 android:layout_height="50dp"
                 android:padding="15dp"
+                android:inputType="phone"
                 android:id="@+id/excursionDate"/>
         </LinearLayout>
         <LinearLayout
